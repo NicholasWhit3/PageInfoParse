@@ -37,7 +37,7 @@ namespace PageInfoParse
                 linksList = driver.FindElements(By.XPath("//a[contains(@href, 'wiki')]"));
                 sizeOfLinksList = linksList.Count;
                 string[] alreadyVisetedLinks = new string[sizeOfLinksList];
-                StreamWriter writer = new StreamWriter((i + 1).ToString() + ") " + linkTitle +" Links" + fileName, true);
+                StreamWriter writer = new StreamWriter("Links - " + linkTitle + fileName, true);
 
                 foreach (IWebElement link in linksList)
                 {

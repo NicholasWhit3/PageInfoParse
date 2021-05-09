@@ -8,13 +8,10 @@ namespace PageInfoParse
     {
         public void SourceTextParse(string LinkTitle, string fileName)
         {
-            if(LinkTitle.Contains("Wikipedia"))
+            LinkTitle = LinkTitle.Replace(' ', '_');            // Ersetzen die Lücken in den LinkTitle
+            if (LinkTitle.Contains("_–_"))
             {
-                LinkTitle = LinkTitle.Split(" ")[0];
-            }
-            else
-            {
-                LinkTitle = LinkTitle.Replace(' ', '_');       // check here
+                LinkTitle = LinkTitle.Split("_–_")[0];          // Korrigieren des Linksname um wiki API zu akzeptieren könnte.
             }
      
             var webclient = new WebClient();
@@ -26,7 +23,7 @@ namespace PageInfoParse
             var fnode = doc.GetElementsByTagName("extract")[0];
             string stringSource = fnode.InnerText;
 
-            File.WriteAllTextAsync("Text -" + LinkTitle + fileName, stringSource);
+            File.WriteAllTextAsync("Text - " + LinkTitle + fileName, stringSource);
         }
 
     }
