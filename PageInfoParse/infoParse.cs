@@ -20,7 +20,6 @@ namespace PageInfoParse
         public string FileName { get => fileName; set => fileName = value; }
 
 
-        
 
         public void OpenBroser()
         {
@@ -28,53 +27,41 @@ namespace PageInfoParse
             driver.Manage().Window.Maximize();
             driver.Navigate().GoToUrl(startingSite);
         }
-        public bool CatLinkCheck(IWebElement element)
+        public bool CatLinkCheck(IWebElement catLinkDiv)
         {
-            string className = element.GetAttribute("className");
+            string preJunk;
 
-            string junkClassReferenceText = "internal mw-magiclink-isbn";
-            string junkClassCatLinksNormdaten = "catlinks normdaten-typ-s";
-            string junkClassEinzelNachweise = "references";
-            string junkClassCatlinks = "mw-normal-catlinks";
-            string junkClassVectorMenuContent = "vector-menu-content";
-            string junkClassWikiLogo = "mw-wiki-logo";
-            string junkClassvectorContentList = "vector-menu-content-list";
+            List<string> junkId = new List<string>()
+            {
+                "internal mw-magiclink-isbn",
+                "catlinks normdaten-typ-s",
+                "references",
+                "vector-menu-content",
+                "mw-wiki-logo",
+                "mw-portlet mw-portlet-personal vector-user-menu-legacy vector-menu",
+                "mw-normal-catlinks",
+                "catlinks",
+                "pt-anontalk",
+                "sisterproject"
+            };
 
+            foreach(string iD in junkId)
+            {
+                try
+                {
+                    var divName = catLinkDiv.FindElement(By.Id(iD));
+                    preJunk = divName.ToString();
+                    if (preJunk != iD) break;
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+            return true;
 
-
-            if (className == junkClassCatLinksNormdaten)
-            {
-                return false;
-            }
-            else if(className == junkClassEinzelNachweise)
-            {
-                return false;
-            }
-            else if(className == junkClassCatlinks)
-            {
-                return false;
-            }
-            else if(className == junkClassReferenceText)
-            {
-                return false;
-            }
-            else if (className == junkClassVectorMenuContent)
-            {
-                return false;
-            }
-            else if (className == junkClassWikiLogo)
-            {
-                return false;
-            }
-            else if (className == junkClassvectorContentList)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
         }
+
 
         public void parsePagesRecurvevily(int deepLvl)
         {
@@ -89,6 +76,7 @@ namespace PageInfoParse
 
                 foreach (IWebElement link in linksList)
                 {
+
                     if (CatLinkCheck(link) == true)
                     {
                         preCheckUrl = link.GetAttribute("href").ToString();
