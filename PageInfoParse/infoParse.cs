@@ -29,36 +29,80 @@ namespace PageInfoParse
         }
         public bool CatLinkCheck(IWebElement catLinkDiv)
         {
-            string preJunk;
 
-            List<string> junkId = new List<string>()
-            {
-                "internal mw-magiclink-isbn",
-                "catlinks normdaten-typ-s",
-                "references",
-                "vector-menu-content",
-                "mw-wiki-logo",
-                "mw-portlet mw-portlet-personal vector-user-menu-legacy vector-menu",
-                "mw-normal-catlinks",
-                "catlinks",
-                "pt-anontalk",
-                "sisterproject"
-            };
+            //List<string> junkId = new List<string>()
+            //{
+            //    "internal mw-magiclink-isbn",
+            //    "catlinks normdaten-typ-s",
+            //    "references",
+            //    "vector-menu-content",
+            //    "mw-wiki-logo",
+            //    "mw-portlet mw-portlet-personal vector-user-menu-legacy vector-menu",
+            //    "mw-normal-catlinks",
+            //    "catlinks",
+            //    "pt-anontalk",
+            //    "sisterproject"
+            //};
 
-            foreach(string iD in junkId)
+            //foreach(string iD in junkId)
+            //{
+            //    try
+            //    {
+            //        string divName = catLinkDiv.GetAttribute("className");
+
+            //        if (divName != iD) break;
+            //    }
+            //    catch(Exception e)
+            //    {
+            //        Console.WriteLine(e.Message);
+            //    }
+            //}
+            //return true;
+
+            string className = catLinkDiv.GetAttribute("className");
+
+            string junkClassReferenceText = "internal mw-magiclink-isbn";
+            string junkClassCatLinksNormdaten = "catlinks normdaten-typ-s";
+            string junkClassEinzelNachweise = "references";
+            string junkClassCatlinks = "mw-normal-catlinks";
+            string junkClassVectorMenuContent = "vector-menu-content";
+            string junkClassWikiLogo = "mw-wiki-logo";
+            string junkClassvectorContentList = "vector-menu-content-list";
+
+
+
+            if (className == junkClassCatLinksNormdaten)
             {
-                try
-                {
-                    var divName = catLinkDiv.FindElement(By.Id(iD));
-                    preJunk = divName.ToString();
-                    if (preJunk != iD) break;
-                }
-                catch(Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
+                return false;
             }
-            return true;
+            else if (className == junkClassEinzelNachweise)
+            {
+                return false;
+            }
+            else if (className == junkClassCatlinks)
+            {
+                return false;
+            }
+            else if (className == junkClassReferenceText)
+            {
+                return false;
+            }
+            else if (className == junkClassVectorMenuContent)
+            {
+                return false;
+            }
+            else if (className == junkClassWikiLogo)
+            {
+                return false;
+            }
+            else if (className == junkClassvectorContentList)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
 
         }
 
@@ -67,8 +111,10 @@ namespace PageInfoParse
         {
             for(int i = 0; i < deepLvl; i++)
             {
+                Thread.Sleep(3000);
                 linkTitle = driver.Title;
-                linksList = driver.FindElements(By.XPath("//a[contains(@href, 'wiki')]"));
+                var searchClass = driver.FindElement(By.CssSelector("#mw-content-text > div.mw-parser-output"));
+                linksList = searchClass.FindElements(By.CssSelector("a[href*='wiki']"));
                 sizeOfLinksList = linksList.Count;
 
                 string[] alreadyVisetedLinks = new string[sizeOfLinksList];
@@ -77,15 +123,15 @@ namespace PageInfoParse
                 foreach (IWebElement link in linksList)
                 {
 
-                    if (CatLinkCheck(link) == true)
-                    {
+                    //if (CatLinkCheck(link) == true)
+                    //{
                         preCheckUrl = link.GetAttribute("href").ToString();
                         if (preCheckUrl.StartsWith("https://de.wikipedia.org"))
                         {
                             alreadyVisetedLinks[counterArr] = preCheckUrl;
                             writer.WriteLine(alreadyVisetedLinks[counterArr]);
                         }
-                    }
+                    //}
                     counterArr++;
                 };
 
