@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace PageInfoParse
 {
-    class infoParse : textParse
+    class InfoParse : TextParse
     {
         private string startingSite = "https://de.wikipedia.org/wiki/Software";
         private string fileName = ".txt";
@@ -30,72 +30,32 @@ namespace PageInfoParse
         public bool CatLinkCheck(IWebElement catLinkDiv)
         {
 
-            //List<string> junkId = new List<string>()
-            //{
-            //    "internal mw-magiclink-isbn",
-            //    "catlinks normdaten-typ-s",
-            //    "references",
-            //    "vector-menu-content",
-            //    "mw-wiki-logo",
-            //    "mw-portlet mw-portlet-personal vector-user-menu-legacy vector-menu",
-            //    "mw-normal-catlinks",
-            //    "catlinks",
-            //    "pt-anontalk",
-            //    "sisterproject"
-            //};
-
-            //foreach(string iD in junkId)
-            //{
-            //    try
-            //    {
-            //        string divName = catLinkDiv.GetAttribute("className");
-
-            //        if (divName != iD) break;
-            //    }
-            //    catch(Exception e)
-            //    {
-            //        Console.WriteLine(e.Message);
-            //    }
-            //}
-            //return true;
-
             string className = catLinkDiv.GetAttribute("className");
 
-            string junkClassReferenceText = "internal mw-magiclink-isbn";
-            string junkClassCatLinksNormdaten = "catlinks normdaten-typ-s";
-            string junkClassEinzelNachweise = "references";
-            string junkClassCatlinks = "mw-normal-catlinks";
-            string junkClassVectorMenuContent = "vector-menu-content";
-            string junkClassWikiLogo = "mw-wiki-logo";
-            string junkClassvectorContentList = "vector-menu-content-list";
+            string junkClassReferences = "internal mw-magiclink-isbn";
+            string junkClassThumbinner = "thumbinner";
+            string junkClassImage = "image";
+            string junkClassThumbRight = "thumb tright";
+            string JunkClassInternal = "internal";
 
 
-
-            if (className == junkClassCatLinksNormdaten)
+            if (className == junkClassReferences)
             {
                 return false;
             }
-            else if (className == junkClassEinzelNachweise)
+            else if (className == junkClassImage)
             {
                 return false;
             }
-            else if (className == junkClassCatlinks)
+            else if (className == junkClassThumbinner)
             {
                 return false;
             }
-            else if (className == junkClassReferenceText)
+            else if (className == junkClassThumbRight)
             {
                 return false;
             }
-            else if (className == junkClassVectorMenuContent)
-            {
-                return false;
-            }
-            else if (className == junkClassWikiLogo)
-            {
-                return false;
-            }
-            else if (className == junkClassvectorContentList)
+            else if (className == JunkClassInternal)
             {
                 return false;
             }
@@ -105,8 +65,6 @@ namespace PageInfoParse
             }
 
         }
-
-
         public void parsePagesRecurvevily(int deepLvl)
         {
             for(int i = 0; i < deepLvl; i++)
@@ -122,19 +80,20 @@ namespace PageInfoParse
 
                 foreach (IWebElement link in linksList)
                 {
-
-                    //if (CatLinkCheck(link) == true)
-                    //{
+                    if(CatLinkCheck(link) == true)
+                    {
                         preCheckUrl = link.GetAttribute("href").ToString();
                         if (preCheckUrl.StartsWith("https://de.wikipedia.org"))
                         {
                             alreadyVisetedLinks[counterArr] = preCheckUrl;
                             writer.WriteLine(alreadyVisetedLinks[counterArr]);
                         }
-                    //}
+                    }
                     counterArr++;
                 };
 
+                writer.Close();
+                GetFirstParagrap(searchClass, LinkTitle, FileName);
                 SourceTextParse(LinkTitle, FileName);
 
                 Thread.Sleep(3000);

@@ -6,31 +6,28 @@ using System.Xml;
 
 namespace PageInfoParse
 {
-    class textParse
+    class TextParse : ParagraphParse
     {
 
-        public string getArticleNameFromTitleAttribute(string linkTitle)
+    public string getArticleNameFromTitleAttribute(string linkTitle)
         {
-            var articleName = linkTitle.Replace(' ', '_');            // Ersetzen die Lücken in den LinkTitle
+            var articleName = linkTitle.Replace(' ', '_');
             if (articleName.Contains("_–_"))
             {
                 try
                 {
-                    articleName = articleName.Split("_–_").First();   // Korrigieren des Linksname um wiki API zu akzeptieren könnte.
+                    articleName = articleName.Split("_–_").First();
                 }
-                catch(Exception e)
+                catch(Exception titleAttribute)
                 {  
-                    Console.WriteLine("Unexpected link title"); 
+                    Console.WriteLine(titleAttribute.Message); 
                 }
             }
 
             return articleName;
         }
-
-
     public void SourceTextParse(string linkTitle, string fileName)
         {
-
             var articleName = getArticleNameFromTitleAttribute(linkTitle);
             var webclient = new WebClient();
             string link = "https://de.wikipedia.org/w/api.php?format=xml&action=query&prop=extracts&titles=" + articleName + "&explaintext";
@@ -38,11 +35,11 @@ namespace PageInfoParse
 
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(pagesource);
-            var fnode = doc.GetElementsByTagName("extract")[0];     // single()
+            var fnode = doc.GetElementsByTagName("extract")[0];
             string stringSource = fnode.InnerText;
 
             File.WriteAllTextAsync("Text - " + articleName + fileName, stringSource);
-        }
 
+        }
     }
 }

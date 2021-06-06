@@ -6,7 +6,7 @@ namespace PageInfoParse
         //private readonly int deepLvl = 10;
         static void Main(string[] args)
         {
-            infoParse linksParse = new infoParse();
+            InfoParse linksParse = new InfoParse();
             linksParse.OpenBroser();
             linksParse.parsePagesRecurvevily(10);
         }
