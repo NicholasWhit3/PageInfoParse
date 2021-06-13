@@ -6,8 +6,10 @@ using System.Xml;
 
 namespace PageInfoParse
 {
-    class TextParse : ParagraphParse
+    class TextParse : ParseTextStripped
     {
+        private string stringSource;
+        private string strippedStringSource;
 
     public string getArticleNameFromTitleAttribute(string linkTitle)
         {
@@ -36,9 +38,11 @@ namespace PageInfoParse
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(pagesource);
             var fnode = doc.GetElementsByTagName("extract")[0];
-            string stringSource = fnode.InnerText;
+            stringSource = fnode.InnerText;
+            strippedStringSource = TextStripped(stringSource);
 
             File.WriteAllTextAsync("Text - " + articleName + fileName, stringSource);
+            File.WriteAllTextAsync("StrippedText- " + linkTitle + fileName, strippedStringSource);
 
         }
     }

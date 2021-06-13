@@ -93,7 +93,6 @@ namespace PageInfoParse
                 };
 
                 writer.Close();
-                GetFirstParagrap(searchClass, LinkTitle, FileName);
                 SourceTextParse(LinkTitle, FileName);
 
                 Thread.Sleep(3000);
